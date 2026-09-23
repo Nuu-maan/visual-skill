@@ -1,0 +1,26 @@
+{
+  "name": "visual",
+  "owner": {
+    "name": "nuu-maan",
+    "url": "https://github.com/Nuu-maan"
+  },
+  "metadata": {
+    "description": "The /visual skill by nuu-maan. Also at https://qala.lol",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "visual",
+      "source": "./",
+      "description": "Turns a song and an idea into a hand-painted watercolor or stop-motion music video, rendered entirely from code with p5.brush and ffmpeg.",
+      "version": "1.0.0",
+      "author": {
+        "name": "nuu-maan",
+        "url": "https://github.com/Nuu-maan"
+      },
+      "homepage": "https://qala.lol",
+      "license": "MIT",
+      "keywords": ["video", "animation", "music-video", "stop-motion", "claymation", "watercolor", "p5js", "ffmpeg"]
+    }
+  ]
+}
