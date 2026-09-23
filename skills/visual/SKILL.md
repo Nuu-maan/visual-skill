@@ -1,7 +1,12 @@
 ---
 name: visual
-description: Make a hand-painted watercolor or stop-motion (clay and papercraft) animated video (MP4) entirely from code, in the style of the "I'm Upping My P(doom)" music video. p5.js + p5.brush frames rendered in headless Chrome, joined with ffmpeg, optional music track and karaoke lyrics. Use when the user says "/visual", "create a visual video", "make an animated video / music video / stop-motion / claymation video / explainer / short film about X", or gives a topic plus scene ideas and wants a rendered video.
-argument-hint: <topic> — <description> — <scene ideas> [audio=path] [len=30s] [bpm=N] [out=dir]
+description: Makes a hand-painted watercolor or stop-motion (clay and papercraft) animated music video (MP4) entirely from code. Storyboards the song, paints every frame with p5.js and p5.brush in headless Chrome, and joins them with the audio and karaoke lyrics in ffmpeg. Use when the user says "/visual", asks to create a visual, animated video, music video, lyric video, stop-motion or claymation video, explainer or short film about something, or gives a topic or a song plus scene ideas and wants a rendered video.
+license: MIT
+compatibility: Requires shell access, Node 18+, ffmpeg, and Chrome or Chromium. Optional uv for automatic tempo and lyric timing. Long songs work best in agents that can run subagents in parallel.
+metadata:
+  version: 1.0.0
+  author: nuu-maan
+  homepage: https://qala.lol
 ---
 
 # /visual: painted animation from a prompt
@@ -12,6 +17,8 @@ The video is a program: every frame is a pure function of time `t`, painted by p
 Read it before writing any chapter.
 
 ## 1. Read the request
+
+Arguments: `<topic> — <description> — <scene ideas> [audio=path] [len=30s] [bpm=N] [out=dir]`, in any order or in plain words.
 
 From the arguments and conversation, pull out:
 - **topic**, **description** (tone, audience, style notes) and **scene info** (any shots the user wants). Missing scenes are yours to invent; that is the point.

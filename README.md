@@ -1,53 +1,60 @@
-# /visual
+# visual-skill
 
-An agent skill that turns a song and an idea into a hand-painted animated music video, made entirely from code.
+The `/visual` agent skill by [@Nuu-maan](https://github.com/Nuu-maan). It turns a song and an idea into a hand-painted watercolour or stop-motion music video, rendered entirely from code. Also on [qala.lol](https://qala.lol/numan/visual).
 
-Every frame is a pure function of time, painted with [p5.brush](https://github.com/acamposuribe/p5.brush) watercolour and ink, rendered in headless Chrome, and joined with the audio by ffmpeg. The agent writes a storyboard, splits the song into chapters, paints each chapter (in parallel with subagents for long songs), checks its own work on contact sheets and renders the MP4.
-
-Two looks:
-- **Watercolour cartoon:** picture-book characters, theatre sets, karaoke lyrics.
-- **Stop motion:** clay puppets, paper-cutout sets with drop shadows, props on visible threads, and replacement jitter, rendered on twos at 12 fps.
+It follows the open [Agent Skills](https://agentskills.io) standard, so it works in Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, OpenCode, Goose, and any other agent that supports the format.
 
 ## Install
 
 ```bash
-git clone https://github.com/Nuu-maan/visual-skill ~/.claude/skills/visual
+npx skills add https://qala.lol/numan/visual
 ```
 
-Requirements: Node 18+, ffmpeg, and Chrome or Chromium. Optional: [uv](https://docs.astral.sh/uv/), for automatic tempo detection and lyric timing.
+Or straight from GitHub:
+
+```bash
+npx skills add https://github.com/Nuu-maan/visual-skill/tree/main/skills/visual
+```
+
+Or as a Claude Code plugin:
+
+```
+/plugin marketplace add Nuu-maan/visual-skill
+/plugin install visual@visual
+```
+
+Or by hand, by copying `skills/visual` into your agent's skills folder:
+
+```bash
+git clone https://github.com/Nuu-maan/visual-skill
+cp -r visual-skill/skills/visual ~/.claude/skills/     # Claude Code
+cp -r visual-skill/skills/visual ~/.codex/skills/      # Codex
+```
+
+Requirements: Node 18+, ffmpeg, and Chrome or Chromium. Optional: [uv](https://docs.astral.sh/uv/) for automatic tempo and lyric timing.
 
 ## Use
 
 ```
-/visual <topic> — <tone and style> — <scene ideas> [audio=path/to/song.mp3] [bpm=N] [out=dir]
-```
-
-Examples:
-
-```
-/visual a stop motion video for my song audio=~/Music/track.mp3
+/visual a stop motion music video for my song audio=~/Music/track.mp3
 /visual how a black hole forms — playful explainer for kids — len=45s
 ```
 
-The agent sets up a project in `./videos/<slug>`, writes `STORYBOARD.md`, paints the chapters, and renders `out/video.mp4`.
+See [skills/visual](skills/visual) for what it does and how it works.
 
-## How it works
+## Layout
 
 | Path | Role |
-|---|---|
-| `SKILL.md` | The agent's workflow: read the brief, storyboard, paint, check, render |
-| `GUIDE.md` | Painting API and style bar for chapter authors |
-| `engine/src/core.js` | Brush wrappers, geometry, timing, camera, lettering |
-| `engine/src/timeline.js` | Chapters, brush-wipe transitions, karaoke |
-| `engine/src/clawd.js`, `cast.js` | Ready-made cartoon characters |
-| `engine/src/stopmotion.js` | Clay puppets and stop-motion helpers |
-| `engine/render.mjs` | Contact sheets, preview clips, resumable parallel frame render, encode |
+| :--- | :--- |
+| `skills/visual/SKILL.md` | The agent's workflow: brief, storyboard, paint, check, render |
+| `skills/visual/GUIDE.md` | Painting API and style bar for chapter authors |
+| `skills/visual/engine/` | The renderer: p5.brush painting core, timeline, character rigs, stop-motion kit, headless render and encode |
+| `.claude-plugin/marketplace.json` | Claude Code plugin marketplace |
 
-Render commands, run inside a project:
+## Security
 
-```bash
-node render.mjs --sheet=10,12.5,15 --out=out/check.jpg   # contact sheet
-node render.mjs --clip=0:10 --out=out/preview.mp4       # preview with sound
-node render.mjs --frames --workers=4 [--fps=12]         # all frames, resumable
-node render.mjs --encode [--fps=12] --out=out/video.mp4
-```
+Skills are instructions an agent follows, and this one runs `npm install`, Node and ffmpeg in the project folder it creates. Read `SKILL.md` and `engine/render.mjs` before using it. It fetches nothing at runtime beyond npm packages and Google Fonts.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
