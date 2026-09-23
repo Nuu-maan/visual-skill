@@ -10,6 +10,22 @@ Two looks:
 
 ## Install
 
+Install it with one command from [qala.lol](https://qala.lol/numan/visual):
+
+```bash
+npx skills add https://qala.lol/numan/visual
+```
+
+It works in any agent that supports the [Agent Skills](https://agentskills.io) standard: Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, OpenCode, Goose, and others. By default it installs into the current project. To choose where it goes:
+
+```bash
+npx skills add https://qala.lol/numan/visual -g                  # every project (user-level)
+npx skills add https://qala.lol/numan/visual -a claude-code      # Claude Code only
+npx skills add https://qala.lol/numan/visual -a codex            # Codex only
+```
+
+Or install by hand:
+
 ```bash
 git clone https://github.com/Nuu-maan/visual-skill ~/.claude/skills/visual
 ```
