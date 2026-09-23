@@ -106,6 +106,11 @@ Use it when the storyboard asks for stop motion, claymation or papercraft. The v
 - **Motion:** everything moves: cameras drift or push, characters bounce on the beat (`pulse`, `move`), and hits land on beats. Use squash and stretch, anticipation and overshoot (`backOut`, `elasticOut`). Put the important action within a shot on beat times (beats fall at `OFF + n × BEAT` s).
 - **Readability:** one clear focal action per shot, with a big silhouette. Shots are short (1.4–4 s), so the gag must read instantly.
 - **Performance:** aim for ≤ 2.5 s per frame and never more than about 4 s. The render log prints ms/frame. Cost comes from the number of `fill` shapes and strokes: hundreds are fine, thousands are not. Prefer fewer, bigger shapes.
+- **Performance traps:**
+  - A watercolour `fill` costs by its whole area, including the part off-screen and the part scaled by the camera or `scale()`. Keep big shapes close to frame size, and use flat `wash` for large backdrops and floors.
+  - Don't name a variable or parameter `pop`. It shadows p5's `pop()`, so transforms never get restored and the frame breaks.
+  - A low-opacity warm `fill` over deep blue turns muddy green. Use a light warm `wash` for window light on night scenes.
+  - Several agents rendering at once share one GPU and inflate ms/frame by 2–10×. Re-time on a quiet machine before trusting a number.
 
 ## Checking your work
 
