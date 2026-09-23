@@ -88,10 +88,10 @@ Optionally cut a short preview with sound: `node render.mjs --clip=<a>:<b> --out
 
 ## 6. Render
 
-Estimate the time first: `dur × 24 × avg ms/frame ÷ workers`. If it is over about 15 minutes, tell the user the estimate and ask before starting.
+Estimate the time first: `dur × fps × avg ms/frame ÷ workers` (fps is 24, or 12 in stop-motion mode). If it is over about 15 minutes, tell the user the estimate and ask before starting.
 
 ```bash
-node render.mjs --frames --workers=4     # out/frames, resumable: rerun to continue
-node render.mjs --encode --out=out/video.mp4
+node render.mjs --frames --workers=4     # out/frames, resumable: rerun to continue; add --fps=12 for stop motion
+node render.mjs --encode --out=out/video.mp4   # same --fps as the frames
 ```
 Run the frame render in the background for long videos. Finish by giving the MP4 path, its length, and how to re-render one part (`--frames=<a>:<b>` after deleting those frames).
