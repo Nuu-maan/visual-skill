@@ -83,6 +83,16 @@ Other helpers:
 
 Troupe Clawds are just more `clawd()` calls in hats. New characters the brief needs are drawn by whichever chapter introduces them (write a rig function like `clawd()`: pose options, face options, ink outlines), and exported on `CAST` if a later chapter reuses them.
 
+## Stop-motion kit (stopmotion.js)
+
+Use it when the storyboard asks for stop motion, claymation or papercraft. The video then renders at 12 fps.
+
+- **Clay kids:** `CAST.boy(x, y, s, o)` (beanie, striped scarf, sweater) and `CAST.her(x, y, s, o)` (black bob, red coat). About 10.5s tall, with the head centre at (0, -9.3s). Pose: `dy, sq, rot, flip, sx, aL/aR, walk, run, sit, back`. Face: `eyes` (dot, closed, look, wide, sad), `lookX/lookY`, `brows` (sad, up, flat, angry), `mouth` (flat, frown, smile, o, wobble, laugh, none), `smileK` (-1..1 blends from a frown to a smile), `blush`. Hooks: `draw`, `handL`, `handR`. `still: true` turns off the jitter.
+  - `sit` only shortens the legs, so cover the hips with a foreground piece (a bench slat or roof ridge).
+  - Arms are drawn behind the body. For hands in front of the body, paint them from the `draw` hook.
+- **Props:** `CAST.herFace(cx, cy, r, o)` is a standalone head, for replacement-head gags. `CAST.photo(x, y, s, rot, { fold })` is a Polaroid that folds into a paper boat as `fold` goes from 0 to 1; the face disappears after 0.2 and the shape switches at 0.5, so fold it in coarse steps. `CAST.hand(x, y, s, rot, { pinch, point, flip })` is the animator's hand.
+- **Helpers:** `sm(t, fps)` quantises time. `nudge(id, a)` returns a per-frame `[dx, dy, rot]` for replacement jitter. `cutout(pts, o)` paints a paper piece over its drop shadow (`o.lift` is the offset).
+
 ## Props (props.js): an optional theatre set
 
 - `stageBack(t, o)` draws the backdrop (default: rotating watercolour sunburst in `o.a`/`o.b`; `o.backdrop(t)` replaces it) and the wooden floor from y 800. `o.spots = [[x, colour], ...]` adds spotlight cones.
