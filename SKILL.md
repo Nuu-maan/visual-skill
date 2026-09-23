@@ -32,6 +32,21 @@ Needs Node 18+, ffmpeg and Chrome or Chromium (`render.mjs` finds it on Linux, m
 Tempo: use the user's bpm. With audio and no bpm, try `aubio tempo -i <file>`; if that isn't installed use 120 and say so.
 The offset is the first downbeat (`ffmpeg -i <file> -af silencedetect=n=-40dB:d=0.1 -f null -` gives where sound starts).
 
+With `uv` available, one script gets both the beat grid and word-level lyric timing, which is far better than guessing:
+```bash
+uv run --with librosa --with faster-whisper python - <<'EOF'
+import librosa
+from faster_whisper import WhisperModel
+f = "<file>"
+y, sr = librosa.load(f, sr=22050)
+tempo, beats = librosa.beat.beat_track(y=y, sr=sr, units='time')
+print("bpm", tempo, "first beats", beats[:4])
+for s in WhisperModel("small.en", device="cpu", compute_type="int8").transcribe(f, word_timestamps=True)[0]:
+    print(' '.join(f'{w.word.strip()}@{w.start:.2f}' for w in s.words))
+EOF
+```
+Use the transcript only for timing; take the lyric text from the user, and split lines at the matching word start times.
+
 ## 3. Storyboard
 
 Write `STORYBOARD.md` in the project. Start with the user's brief verbatim, then:
