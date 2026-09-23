@@ -1,6 +1,6 @@
 ---
 name: visual
-description: Make a hand-painted watercolor animated video (MP4) entirely from code, in the style of the "I'm Upping My P(doom)" music video. p5.js + p5.brush frames rendered in headless Chrome, joined with ffmpeg, optional music track and karaoke lyrics. Use when the user says "/visual", "create a visual video", "make an animated video / music video / explainer / short film about X", or gives a topic plus scene ideas and wants a rendered video.
+description: Make a hand-painted watercolor or stop-motion (clay and papercraft) animated video (MP4) entirely from code, in the style of the "I'm Upping My P(doom)" music video. p5.js + p5.brush frames rendered in headless Chrome, joined with ffmpeg, optional music track and karaoke lyrics. Use when the user says "/visual", "create a visual video", "make an animated video / music video / stop-motion / claymation video / explainer / short film about X", or gives a topic plus scene ideas and wants a rendered video.
 argument-hint: <topic> — <description> — <scene ideas> [audio=path] [len=30s] [bpm=N] [out=dir]
 ---
 
