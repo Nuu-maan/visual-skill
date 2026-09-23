@@ -57,6 +57,17 @@ Write `STORYBOARD.md` in the project. Start with the user's brief verbatim, then
 
 Then fill `song.js`: `dur`, `bpm`, `offset`, `audio` (`'assets/<file>'` or `null`), `wipes` (chapter-break times), `chapters` (file names, in order), `lyrics` (`[[start, end, text], ...]` or `[]`).
 
+### Stop-motion mode
+
+When the user asks for stop motion, claymation or a papercraft look, add a **Stop-motion look** section to the storyboard and use `src/stopmotion.js`:
+- Render and encode at **12 fps** (on twos): pass `--fps=12` to `--frames`, `--encode` and `--clip`. Stepped motion is the point; don't smooth it away.
+- Characters are clay puppets: `CAST.boy` / `CAST.her` (beanie kid and bob-haired girl), or new rigs in the same style (flat `wash`, highlight blob, thick ink outline). `CAST.photo`, `CAST.herFace` and `CAST.hand` (the animator's hand, for meta shots) are ready too.
+- Sets are paper cutouts with drop shadows (`cutout(pts, o)`); rain, stars and snow hang on visible threads; backdrops are painted cards with visible edges in wide shots.
+- Every set piece gets per-frame replacement jitter from `nudge(id)`. The rigs apply it to themselves; pass `still: true` to turn it off.
+- A strong bookend is to reveal the tabletop set, lamp and animator's hand at the end.
+
+Write the rig list, the stop-motion rules and `--fps=12` into every chapter agent's prompt.
+
 ## 4. Paint the chapters
 
 One file per chapter in `src/ch/`, in the IIFE shape `GUIDE.md` shows, calling `chapter(name, start, end, shots)`.
