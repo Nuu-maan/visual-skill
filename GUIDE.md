@@ -41,7 +41,7 @@ Each chapter is one file in `src/ch/`, wrapped in an IIFE so its helpers stay pr
 | `curv` | smooth the outline through the points (0–1) instead of straight segments. |
 
 Other helpers:
-- **Geometry:** `rectPts(x, y, w, h, jitter)`, `ellPts(cx, cy, rx, ry, n, jitter, rot)`, `rrPts(x, y, w, h, r, jitter)` (rounded rectangle), `starPts(cx, cy, r, inner, n, rot)`, `heartPts(cx, cy, r)`.
+- **Geometry:** `rectPts(x, y, w, h, jitter)`, `ellPts(cx, cy, rx, ry, n, jitter, rot)`, `rrPts(x, y, w, h, r, jitter)` (rounded rectangle), `starPts(cx, cy, r, inner, n, rot)`, `heartPts(cx, cy, r)` (defined in clawd.js).
 - **Lines:** `inkLine(pts, sw, colour, brush = 'ink', curvature)` draws a stroke along a path. Brushes: `'ink'`, `'inkfine'`, `'dry'` (bristly), plus built-ins `'2B'`, `'HB'`, `'charcoal'`, `'marker'`, `'spray'`, `'rotring'`, `'cpencil'`, `'pen'`.
 - **Transforms:** p5 `push()/pop()/translate()/rotate()/scale()` work with all brush calls.
 - **Palette** `PAL`: `paper, ink, clay, clayDk, clayLt, night, indigo, rose, ochre, sap, teal, violet, cream, sky`. `mixCol(a, b, k)` mixes two hex colours. Any hex colour is fine; stay harmonious (soft, warm, watercolour). Avoid pure black and pure white: use `PAL.ink` / `PAL.night` and `PAL.cream`.
