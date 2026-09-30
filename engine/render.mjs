@@ -17,7 +17,7 @@ const CHROME = args.chrome || process.env.CHROME || [
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe'
 ].find(existsSync);
 if (!CHROME) { console.error('Chrome not found; pass --chrome=<path>'); process.exit(1); }
-const DUR = SONG.dur, fps = +(args.fps || 24);
+const DUR = SONG.dur, fps = +(args.fps || SONG.fps || 24);
 const audioIn = (...pre) => SONG.audio ? [...pre, '-i', SONG.audio] : [];
 const audioOut = () => SONG.audio ? ['-map', '1:a', '-c:a', 'aac', '-b:a', '192k', '-shortest'] : [];
 const FRAMES_DIR = 'out/frames';
