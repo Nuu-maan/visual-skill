@@ -1,12 +1,17 @@
 # /visual
 
-An agent skill that turns a song and an idea into a hand-painted animated music video, made entirely from code.
+An agent skill that turns a song and an idea into an animated music video or explainer, made entirely from code.
 
 Every frame is a pure function of time, painted with [p5.brush](https://github.com/acamposuribe/p5.brush) watercolour and ink, rendered in headless Chrome, and joined with the audio by ffmpeg. The agent writes a storyboard, splits the song into chapters, paints each chapter (in parallel with subagents for long songs), checks its own work on contact sheets and renders the MP4.
 
-Two looks:
-- **Watercolour cartoon:** picture-book characters, theatre sets, karaoke lyrics.
-- **Stop motion:** clay puppets, paper-cutout sets with drop shadows, props on visible threads, and replacement jitter, rendered on twos at 12 fps.
+Looks, set per video with `look` in `song.js`:
+- **Watercolour** (default): picture-book characters, theatre sets, karaoke lyrics.
+- **Chalk:** chalk lines and scribbled colour on a slate board.
+- **Pencil:** a pencil test with graphite lines, coloured-pencil hatching, peg holes and a frame counter.
+- **Film:** a 1930s cartoon print, with sepia, flicker, gate weave, scratches and iris transitions.
+- **Neon:** glowing outlines and bloom on dark scenes.
+
+Plus a **stop-motion** kit: clay puppets, paper-cutout sets with drop shadows, props on visible threads, and replacement jitter, rendered on twos at 12 fps.
 
 ## Install
 
@@ -42,7 +47,8 @@ Examples:
 
 ```
 /visual a stop motion video for my song audio=~/Music/track.mp3
-/visual how a black hole forms — playful explainer for kids — len=45s
+/visual how a black hole forms — playful chalkboard explainer for kids — len=45s
+/visual a 1930s cartoon about a coffee machine that wants to dance audio=~/Music/swing.mp3
 ```
 
 The agent sets up a project in `./videos/<slug>`, writes `STORYBOARD.md`, paints the chapters, and renders `out/video.mp4`.
@@ -54,6 +60,7 @@ The agent sets up a project in `./videos/<slug>`, writes `STORYBOARD.md`, paints
 | `SKILL.md` | The agent's workflow: read the brief, storyboard, paint, check, render |
 | `GUIDE.md` | Painting API and style bar for chapter authors |
 | `engine/src/core.js` | Brush wrappers, geometry, timing, camera, lettering |
+| `engine/src/looks.js` | Watercolour, chalk, pencil, film and neon looks |
 | `engine/src/timeline.js` | Chapters, brush-wipe transitions, karaoke |
 | `engine/src/clawd.js`, `cast.js` | Ready-made cartoon characters |
 | `engine/src/stopmotion.js` | Clay puppets and stop-motion helpers |
@@ -64,6 +71,7 @@ Render commands, run inside a project:
 ```bash
 node render.mjs --sheet=10,12.5,15 --out=out/check.jpg   # contact sheet
 node render.mjs --clip=0:10 --out=out/preview.mp4       # preview with sound
-node render.mjs --frames --workers=4 [--fps=12]         # all frames, resumable
-node render.mjs --encode [--fps=12] --out=out/video.mp4
+node render.mjs --look=chalk --sheet=10,12.5 --out=out/chalk.jpg   # try another look
+node render.mjs --frames --workers=4                    # all frames, resumable
+node render.mjs --encode --out=out/video.mp4
 ```
