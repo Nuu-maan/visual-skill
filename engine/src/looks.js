@@ -39,7 +39,6 @@ const LOOKS = {
     }
   },
 
-
   pencil: {
     pal: { paper: '#F8F6F0' },
     face: '"Patrick Hand"',
@@ -58,7 +57,6 @@ const LOOKS = {
       c.fillText(String(Math.round(t * (SONG.fps || 24)) + 1).padStart(4, '0'), W - 48, 60);
     }
   },
-
 
   film: {
     face: '"Rye"',
@@ -79,6 +77,31 @@ const LOOKS = {
     }
   },
 
+  neon: {
+    pal: { paper: '#130F24' },
+    face: '"Tilt Neon"',
+    brushes() { brush.add('neon', { type: 'default', weight: 5, scatter: .05, sharpness: .95, grain: 40, opacity: 255, spacing: .15, pressure: [1, 1], rotate: 'natural', noise: .05 }); },
+    stroke: (c, b, w) => [c === PAL.ink ? '#7DF6FF' : LIGHT(c), 'neon', w * 1.4],
+    shape: (o, pts) => ({
+      ...o,
+      ink: o.ink === null ? null : o.ink && o.ink !== PAL.ink ? o.ink : o.wash && o.wash !== PAL.ink ? o.wash : o.ink,
+      wash: o.wash && mixCol(o.wash, PAL.paper, isBackdrop(pts) ? .85 : .65),
+      fill: o.fill && mixCol(o.fill, PAL.paper, .6), fillOp: (o.fillOp ?? 170) * .6
+    }),
+    wipe(p) { const k = 1 - Math.abs(p - .5) * 2, on = hash(Math.floor(T * 24) * 3.1) > .3; flash(clamp(k * 1.8) * (on ? 1 : .55), '#07060D'); },
+    ground(c) {
+      c.strokeStyle = 'rgba(255,80,200,.10)'; c.lineWidth = 2;
+      for (let i = -12; i <= 12; i++) { c.beginPath(); c.moveTo(W / 2 + i * 40, 700); c.lineTo(W / 2 + i * 260, H); c.stroke(); }
+      for (let y = 700, d = 14; y < H; y += d, d *= 1.35) { c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
+    },
+    post(c) {
+      const src = copyFrame(c);
+      c.globalCompositeOperation = 'lighter';
+      c.filter = 'blur(18px)'; c.globalAlpha = .55; c.drawImage(src, 0, 0);
+      c.filter = 'blur(5px)'; c.globalAlpha = .45; c.drawImage(src, 0, 0);
+      c.filter = 'none'; c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+    }
+  }
 };
 
 const LOOK_NAME = new URLSearchParams(location.search).get('look') || SONG.look || 'watercolor';
