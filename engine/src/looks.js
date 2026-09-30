@@ -33,6 +33,26 @@ const LOOKS = {
     }
   },
 
+
+  pencil: {
+    pal: { paper: '#F8F6F0' },
+    face: '"Patrick Hand"',
+    wipeCols: [['#F8F6F0', '#ECE9E1']],
+    stroke: (c, b, w) => [c === PAL.ink ? '#45454F' : c, b === 'inkfine' ? 'HB' : '2B', w * 1.3],
+    shape: (o, pts) => {
+      if (!o.wash) return o.fill ? { ...o, fillOp: (o.fillOp ?? 170) * .6 } : o;
+      const big = isBackdrop(pts);
+      return { ...o, wash: mixCol(o.wash, PAL.paper, big ? .8 : .5), washOp: (o.washOp ?? 255) * .8,
+        hatch: o.hatch || (big ? null : { d: 7, a: .8, o: { rand: .35 }, b: 'cpencil', c: o.wash, w: .8 }) };
+    },
+    post(c, t) {
+      c.fillStyle = '#DDD9CF';
+      for (const dx of [-260, 0, 260]) { c.beginPath(); c.ellipse(W / 2 + dx, H - 34, dx ? 34 : 20, 12, 0, 0, TAU); c.fill(); }
+      c.font = '34px "Patrick Hand"'; c.fillStyle = 'rgba(70,70,80,.8)'; c.textAlign = 'right';
+      c.fillText(String(Math.round(t * (SONG.fps || 24)) + 1).padStart(4, '0'), W - 48, 60);
+    }
+  },
+
 };
 
 const LOOK_NAME = new URLSearchParams(location.search).get('look') || SONG.look || 'watercolor';
