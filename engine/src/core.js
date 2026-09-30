@@ -96,6 +96,7 @@ function starPts(cx, cy, r, inner = .38, n = 4, rot = -Math.PI / 2) {
 // ---------- paint wrapper ----------
 // One call = one painted shape: optional flat wash, optional watercolor fill, optional hatch, optional ink outline.
 function paint(pts, o = {}) {
+  if (LOOK.shape) o = LOOK.shape(o, pts);
   if (o.wash || o.fill || o.hatch) {
     if (o.wash) brush.wash(o.wash, o.washOp ?? 255); else brush.noWash();
     if (o.fill) { brush.fill(o.fill, o.fillOp ?? 170); brush.fillBleed(o.bleed ?? .1); brush.fillTexture(o.tex ?? .4, o.border ?? .35); } else brush.noFill();
@@ -106,12 +107,16 @@ function paint(pts, o = {}) {
   }
   // the outline is one continuous tapered stroke, not a stroke per side
   if (o.ink !== null) {
-    brush.noWash(); brush.noFill(); brush.noHatch(); brush.set(o.br || 'ink', o.ink || PAL.ink, o.sw ?? 1);
+    brush.noWash(); brush.noFill(); brush.noHatch(); setStroke(o.br || 'ink', o.ink || PAL.ink, o.sw ?? 1);
     brush.beginShape(o.curv || 0); for (const p of pts) brush.vertex(p[0], p[1]); brush.endShape(true);
   }
 }
 function inkLine(pts, sw = 1, col = PAL.ink, br = 'ink', curv = .5) {
-  brush.noFill(); brush.noWash(); brush.noHatch(); brush.set(br, col, sw); brush.spline(pts, curv);
+  brush.noFill(); brush.noWash(); brush.noHatch(); setStroke(br, col, sw); brush.spline(pts, curv);
+}
+function setStroke(br, col, sw) {
+  if (LOOK.stroke) [col, br, sw] = LOOK.stroke(col, br, sw);
+  brush.set(br, col, sw);
 }
 
 // ---------- lettering (drawn on the 2D compositor, under the paper grain) ----------
@@ -128,7 +133,7 @@ function drawLetters(c) {
   for (const L of LETTERS) {
     const k = L.pop != null ? backOut(L.pop) : 1; if (k <= .01) continue;
     c.save(); c.translate(L.x, L.y); c.rotate(L.rot || 0); c.scale(k, k); c.globalAlpha = L.alpha ?? 1;
-    c.font = L.font || `${L.size}px "Permanent Marker", "Comic Sans MS", cursive`;
+    c.font = L.font || `${LOOK.weight || ''} ${L.size}px ${LOOK.face || '"Permanent Marker"'}, "Comic Sans MS", cursive`;
     c.textAlign = L.align || 'center'; c.textBaseline = 'middle';
     if (L.stroke) { c.lineJoin = 'round'; c.lineWidth = L.size * .12; c.strokeStyle = L.stroke; c.strokeText(L.txt, 0, 0); }
     if (L.ink !== false) { c.fillStyle = PAL.ink; c.fillText(L.txt, L.size * .045, L.size * .055); }
@@ -155,6 +160,7 @@ function lcg(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647) /
 function makePaper() {
   const g = createGraphics(W, H); g.pixelDensity(1); const c = g.drawingContext, rnd = lcg(11);
   c.fillStyle = PAL.paper; c.fillRect(0, 0, W, H);
+  if (LOOK.ground) { LOOK.ground(c, rnd); return g; }
   for (let i = 0; i < 70; i++) { const x = rnd() * W, y = rnd() * H, r = 120 + rnd() * 380, gr = c.createRadialGradient(x, y, 0, x, y, r), a = .045 * rnd(); gr.addColorStop(0, `rgba(160,125,80,${a})`); gr.addColorStop(1, 'rgba(160,125,80,0)'); c.fillStyle = gr; c.fillRect(x - r, y - r, 2 * r, 2 * r); }
   c.lineWidth = 1;
   for (let i = 0; i < 1400; i++) { const x = rnd() * W, y = rnd() * H, l = 6 + rnd() * 26, a = rnd() * TAU; c.strokeStyle = `rgba(110,88,60,${.035 + rnd() * .06})`; c.beginPath(); c.moveTo(x, y); c.quadraticCurveTo(x + Math.cos(a + .6) * l * .5, y + Math.sin(a + .6) * l * .5, x + Math.cos(a) * l, y + Math.sin(a) * l); c.stroke(); }
@@ -181,10 +187,11 @@ function defineBrushes() {
 // ---------- frame ----------
 async function setup() {
   createCanvas(W, H, WEBGL); pixelDensity(1); noLoop();
-  brush.scaleBrushes(5); defineBrushes();
+  brush.scaleBrushes(5); defineBrushes(); LOOK.brushes?.();
   paperG = makePaper(); grainC = makeGrain(); letG = createGraphics(W, H); letG.pixelDensity(1);
   outC = document.getElementById('out'); outX = outC.getContext('2d');
-  await Promise.all([document.fonts.load('100px "Permanent Marker"'), document.fonts.load('800 50px "Shantell Sans"')]);
+  await Promise.all([document.fonts.load('100px "Permanent Marker"'), document.fonts.load('800 50px "Shantell Sans"'),
+    document.fonts.load(`${LOOK.weight || ''} 100px ${LOOK.face || '"Permanent Marker"'}`)]);
   window.ready = true;
   if (!location.search.includes('render')) devUI();
 }
@@ -205,6 +212,7 @@ function composite(t) {
   c.globalCompositeOperation = 'multiply'; c.drawImage(grainC, 0, 0);
   c.globalCompositeOperation = 'source-over';
   drawKaraokeText(c);
+  LOOK.post?.(c, t);
 }
 window.renderAt = async (t, type = 'image/png', q = .92) => { T = t; await redraw(); composite(t); return outC.toDataURL(type, q); };
 // Contact sheet of several times, for quick visual checks: returns { url, ms[] }.

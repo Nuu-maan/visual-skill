@@ -103,7 +103,7 @@ function rFace(s, sw, o) {
     else if (e === 'x') { inkLine([[cx - .3 * s, cy - .3 * s], [cx + .3 * s, cy + .3 * s]], sw * .7, PAL.ink, 'ink', 0); inkLine([[cx + .3 * s, cy - .3 * s], [cx - .3 * s, cy + .3 * s]], sw * .7, PAL.ink, 'ink', 0); }
     else if (e === 'heart') paint(heartPts(cx, cy, .45 * s), { wash: '#E2476E', ink: null });
     else if (e === 'swirl') { const sp = []; for (let k = 0; k < 14; k++) { const a = k * .8 + T * 7 * side, r = k * .05 * s; sp.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]); } inkLine(sp, sw * .5, PAL.ink, 'inkfine', .6); }
-    brush.noFill(); brush.noWash(); brush.noHatch(); brush.set('inkfine', PAL.ink, sw * .9);
+    brush.noFill(); brush.noWash(); brush.noHatch(); setStroke('inkfine', PAL.ink, sw * .9);
     brush.beginShape(0); for (const p of ellPts(cx, cy, .82 * s, .8 * s, 18)) brush.vertex(p[0], p[1]); brush.endShape(true);
   }
   inkLine([[-.2 * s, gy - .1 * s], [.2 * s, gy - .1 * s]], sw * .7, PAL.ink, 'inkfine', 0);

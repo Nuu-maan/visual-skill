@@ -21,7 +21,7 @@ function drawWorld(t) {
     CAM = null;
   }
   flushLetters();
-  WIPES.forEach((b, j) => { if (Math.abs(t - b) < WIPE_TR) wipe((t - (b - WIPE_TR)) / (2 * WIPE_TR), j); });
+  WIPES.forEach((b, j) => { if (Math.abs(t - b) < WIPE_TR) (LOOK.wipe || wipe)((t - (b - WIPE_TR)) / (2 * WIPE_TR), j); });
   karaoke(t);
 }
 
@@ -33,7 +33,7 @@ function placeholder(t) {
 
 // ---------- brush wipe ----------
 // Fat paint strokes sweep across to cover the old scene, the scene swaps under full cover (p = .5), then they drag off.
-const WIPE_COLS = [[PAL.clayDk, PAL.clay], [PAL.indigo, PAL.violet], [PAL.teal, PAL.sap], [PAL.violet, PAL.rose], [PAL.ochre, PAL.clay]];
+const WIPE_COLS = LOOK.wipeCols || [[PAL.clayDk, PAL.clay], [PAL.indigo, PAL.violet], [PAL.teal, PAL.sap], [PAL.violet, PAL.rose], [PAL.ochre, PAL.clay]];
 function wipe(p, idx) {
   const [c1, c2] = WIPE_COLS[idx % WIPE_COLS.length], n = 5, bh = (H + 420) / n + 40;
   push(); translate(W / 2, H / 2); rotate(-.1); translate(-W / 2, -H / 2);

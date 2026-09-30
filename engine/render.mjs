@@ -4,6 +4,7 @@
 //   node render.mjs --clip=0:6 --fps=24 --out=out/test.mp4                      short clip with audio
 //   node render.mjs --frames --workers=4                                         full-res JPEG frames → out/frames (resumable)
 //   node render.mjs --encode [--out=out/video.mp4]                               frames + song → MP4
+//   add --look=<name> to any render to preview another look without editing song.js
 import puppeteer from 'puppeteer-core';
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync, existsSync, statSync, renameSync, readdirSync, readFileSync } from 'node:fs';
@@ -17,7 +18,7 @@ const CHROME = args.chrome || process.env.CHROME || [
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe'
 ].find(existsSync);
 if (!CHROME) { console.error('Chrome not found; pass --chrome=<path>'); process.exit(1); }
-const DUR = SONG.dur, fps = +(args.fps || 24);
+const DUR = SONG.dur, fps = +(args.fps || SONG.fps || 24);
 const audioIn = (...pre) => SONG.audio ? [...pre, '-i', SONG.audio] : [];
 const audioOut = () => SONG.audio ? ['-map', '1:a', '-c:a', 'aac', '-b:a', '192k', '-shortest'] : [];
 const FRAMES_DIR = 'out/frames';
@@ -41,7 +42,7 @@ async function openPage(tag = '') {
   const page = await browser.newPage();
   page.on('console', m => { if (['error', 'warn'].includes(m.type())) console.log(`[page${tag}]`, m.text()); });
   page.on('pageerror', e => console.log(`[page error${tag}]`, e.message));
-  await page.goto(pathToFileURL(resolve('studio.html')).href + '?render', { waitUntil: 'networkidle0' });
+  await page.goto(pathToFileURL(resolve('studio.html')).href + '?render' + (args.look ? '&look=' + args.look : ''), { waitUntil: 'networkidle0' });
   await page.waitForFunction('window.ready === true', { timeout: 60000 });
   return page;
 }
