@@ -19,7 +19,7 @@ Each chapter is one file in `src/ch/`, wrapped in an IIFE so its helpers stay pr
 
 - `chapter(name, start, end, shots)` registers the chapter. A shot fn is called as `fn(t, lt, dur)` (song time, time since shot start, shot length) and must paint the **entire frame**, background included. Cuts land on each shot's start time.
 - **Frames render in parallel and out of order.** Every shot must be a pure function of `t`: no state that carries between frames, and no `Math.random()`. Use `hash(i)` for stable per-object randomness and `jit(a)` for hand-drawn jitter. `jit` is reseeded 12×/s, which makes the linework "boil" like hand-drawn animation, and that's wanted.
-- Only edit your own chapter file. If a shared helper is missing, write it privately inside your IIFE. If you find a real bug in a shared file, report it; don't edit it. Shared files: core.js, clawd.js, cast.js, props.js, timeline.js, lyrics.js, studio.html, render.mjs.
+- Only edit your own chapter file. If a shared helper is missing, write it privately inside your IIFE. If you find a real bug in a shared file, report it; don't edit it. Shared files: core.js, looks.js, clawd.js, cast.js, props.js, timeline.js, lyrics.js, studio.html, render.mjs.
 
 ## Canvas and layout
 
@@ -27,6 +27,20 @@ Each chapter is one file in `src/ch/`, wrapped in an IIFE so its helpers stay pr
 - **If `song.js` has lyrics, the karaoke bar covers the bottom band (about y 975–1070) whenever a lyric is showing.** Keep faces and key action above about y 960.
 - The paper texture is already under every frame, and a paper grain and vignette are multiplied over the top.
 - The timeline adds these automatically: karaoke (from `SONG.lyrics`) and brush-wipe chapter breaks at the `SONG.wipes` times.
+
+## Looks (looks.js)
+
+`SONG.look` restyles the whole video without changing any chapter code: every `paint()` shape and ink line, the paper, the lettering font, the chapter wipe and a post-process over the frame. Paint as usual, but keep the look in mind:
+
+| look | what it does | paint for it |
+|---|---|---|
+| `watercolor` | the default picture-book look | everything in this guide |
+| `chalk` | slate board, chalk outlines, colour washes become chalk scribble; eraser-smear wipes; Cabin Sketch lettering | Full-frame backdrops fade to a faint tint so the board shows through. Build scenes from mid-size shapes on the board, not one big painted sky. |
+| `pencil` | pencil test: graphite lines, coloured-pencil hatching, pale washes, peg holes and a frame counter; Patrick Hand lettering | Set `fps: 12`. Keep backgrounds sparse; character acting carries the shot. |
+| `film` | 1930s cartoon print: sepia monochrome, flicker, gate weave, scratches, dust, iris-in/out chapter breaks; Rye lettering | Hue disappears, so separate figure and ground by lightness (a light character on a mid-dark set). Rubber-hose bounces and big takes suit it. |
+| `neon` | dark scene, glowing outlines in each shape's colour, dim fills, bloom; power-cut flicker wipes; Tilt Neon lettering | Set scenes at night. Outlines carry the picture, so give shapes their own `wash` colour; dark shapes vanish. |
+
+Preview any look without editing `song.js`: `node render.mjs --look=neon --sheet=...`.
 
 ## Painting API (core.js)
 
