@@ -8,6 +8,12 @@ const isBackdrop = pts => {
   for (const [x, y] of pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
   return (x1 - x0) * (y1 - y0) > W * H * .3;
 };
+let postC = null;
+function copyFrame(c) {
+  if (!postC) { postC = document.createElement('canvas'); postC.width = W; postC.height = H; }
+  const p = postC.getContext('2d'); p.clearRect(0, 0, W, H); p.drawImage(c.canvas, 0, 0);
+  return postC;
+}
 
 const LOOKS = {
   watercolor: {},
@@ -50,6 +56,26 @@ const LOOKS = {
       for (const dx of [-260, 0, 260]) { c.beginPath(); c.ellipse(W / 2 + dx, H - 34, dx ? 34 : 20, 12, 0, 0, TAU); c.fill(); }
       c.font = '34px "Patrick Hand"'; c.fillStyle = 'rgba(70,70,80,.8)'; c.textAlign = 'right';
       c.fillText(String(Math.round(t * (SONG.fps || 24)) + 1).padStart(4, '0'), W - 48, 60);
+    }
+  },
+
+
+  film: {
+    face: '"Rye"',
+    wipe(p) { const k = p < .5 ? 1 - easeIn(p * 2) : easeOut((p - .5) * 2); iris(W / 2, H / 2, k * 1150, '#16110C'); },
+    post(c, t) {
+      const f = Math.floor(t * 24), h = k => hash(f * 13.7 + k), src = copyFrame(c);
+      c.filter = `grayscale(1) sepia(.35) contrast(1.25) brightness(${.9 + h(1) * .14})`;
+      c.drawImage(src, (h(2) - .5) * 5 - 10, (h(3) - .5) * 8 - 10, W + 20, H + 20);
+      c.filter = 'none';
+      for (let i = 0, n = Math.floor(h(4) * 3.5); i < n; i++) {
+        const x = h(10 + i) * W; c.strokeStyle = `rgba(${h(20 + i) < .5 ? '255,250,235' : '30,22,15'},${.25 + h(30 + i) * .35})`;
+        c.lineWidth = 1 + h(40 + i) * 2; c.beginPath(); c.moveTo(x, 0); c.quadraticCurveTo(x + (h(50 + i) - .5) * 30, H / 2, x + (h(60 + i) - .5) * 20, H); c.stroke();
+      }
+      c.fillStyle = 'rgba(25,18,12,.7)';
+      for (let i = 0; i < 7; i++) { c.beginPath(); c.ellipse(h(70 + i) * W, h(80 + i) * H, 1 + h(90 + i) * 4, 1 + h(95 + i) * 3, h(99 + i) * 3, 0, TAU); c.fill(); }
+      const g = c.createRadialGradient(W / 2, H / 2, H * .35, W / 2, H / 2, H * .95);
+      g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(20,14,8,.7)'); c.fillStyle = g; c.fillRect(0, 0, W, H);
     }
   },
 
