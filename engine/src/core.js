@@ -106,12 +106,15 @@ function paint(pts, o = {}) {
   }
   // the outline is one continuous tapered stroke, not a stroke per side
   if (o.ink !== null) {
-    brush.noWash(); brush.noFill(); brush.noHatch(); brush.set(o.br || 'ink', o.ink || PAL.ink, o.sw ?? 1);
+    brush.noWash(); brush.noFill(); brush.noHatch(); setStroke(o.br || 'ink', o.ink || PAL.ink, o.sw ?? 1);
     brush.beginShape(o.curv || 0); for (const p of pts) brush.vertex(p[0], p[1]); brush.endShape(true);
   }
 }
 function inkLine(pts, sw = 1, col = PAL.ink, br = 'ink', curv = .5) {
-  brush.noFill(); brush.noWash(); brush.noHatch(); brush.set(br, col, sw); brush.spline(pts, curv);
+  brush.noFill(); brush.noWash(); brush.noHatch(); setStroke(br, col, sw); brush.spline(pts, curv);
+}
+function setStroke(br, col, sw) {
+  brush.set(br, col, sw);
 }
 
 // ---------- lettering (drawn on the 2D compositor, under the paper grain) ----------

@@ -144,7 +144,7 @@ function hat(u, h, sw) {
     paint([[-3 * u, -7.9 * u], [-3 * u, -10.8 * u], [-1.5 * u, -9.3 * u], [0, -11.2 * u], [1.5 * u, -9.3 * u], [3 * u, -10.8 * u], [3 * u, -7.9 * u]], { wash: '#F2C53D', fill: PAL.ochre, fillOp: 90, ink: PAL.ink, sw: sw * .8 });
     for (const gx of [-1.5, 0, 1.5]) paint(ellPts(gx * u, -8.7 * u, u * .3, u * .3, 8), { wash: gx ? PAL.teal : PAL.rose, ink: null });
   } else if (h === 'halo') {
-    brush.noFill(); brush.noWash(); brush.noHatch(); brush.set('ink', PAL.ochre, sw * 1.4);
+    brush.noFill(); brush.noWash(); brush.noHatch(); setStroke('ink', PAL.ochre, sw * 1.4);
     brush.beginShape(0); for (const p of ellPts(0, -10.4 * u, 3.2 * u, .8 * u, 20)) brush.vertex(p[0], p[1]); brush.endShape(true);
   } else if (h === 'wizard' || h === 'hood') {
     paint([[-3.9 * u, -7.9 * u], [.9 * u, -15 * u], [3.9 * u, -7.9 * u]], { wash: h === 'hood' ? PAL.violet : PAL.indigo, fill: PAL.violet, fillOp: 80, ink: PAL.ink, sw: sw * .8 });
